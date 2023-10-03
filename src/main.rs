@@ -1,6 +1,7 @@
 use clap::Parser;
 
 mod cli;
+mod utils;
 
 fn main() {
     let args = cli::types::Args::parse();
