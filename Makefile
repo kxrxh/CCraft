@@ -7,7 +7,7 @@ TARGET_DIR = target/release
 # Set the installation directory for the executable
 INSTALL_DIR = /usr/local/bin
 
-TEST_DIR = test-py
+TEST_DIR = testpy
 
 # Set the name of the executable
 EXECUTABLE = $(PROJECT_NAME)
