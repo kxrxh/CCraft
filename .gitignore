@@ -1,3 +1,4 @@
 /target
 .vscode
-/testpy/ccraft
+/testpy
+!testpy/tests.py

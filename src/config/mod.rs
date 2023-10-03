@@ -1,3 +1,2 @@
-mod file;
+pub mod file;
 mod parser;
-pub mod core;

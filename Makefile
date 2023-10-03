@@ -32,7 +32,7 @@ install: build
 	@clean
 
 # Run the tests
-test: clean-tests build clean-tests
+test: clean-tests build 
 	@echo "🧪 Running tests..."
 	@install -m 777 $(TARGET_DIR)/$(EXECUTABLE) $(TEST_DIR)
 	cd $(TEST_DIR) && python tests.py

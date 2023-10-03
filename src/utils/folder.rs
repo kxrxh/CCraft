@@ -1,14 +1,14 @@
 use std::{fs, io};
 
-pub fn is_folder_exists(folder_path: &str) -> bool {
-    fs::metadata(folder_path)
-        .map(|metadata| metadata.is_dir())
-        .unwrap_or(false)
-}
+use std::path::Path;
 
+pub fn is_folder_exists(folder_path: impl AsRef<Path>) -> bool {
+    folder_path.as_ref().is_dir()
+}
 // Function to create a new folder with a validated name
-pub fn create_folder(folder_path: &str) -> io::Result<()> {
-    if validate_folder_name(folder_path) {
+pub fn create_folder(path_to_folder: &str, folder_name: &str) -> io::Result<()> {
+    if validate_folder_name(folder_name) {
+        let folder_path = Path::new(path_to_folder).join(folder_name);
         fs::create_dir_all(folder_path)?;
         Ok(())
     } else {
@@ -20,12 +20,11 @@ pub fn create_folder(folder_path: &str) -> io::Result<()> {
 }
 
 // Function to validate folder name (only allows alphanumeric characters, underscores, and hyphens)
-#[inline(always)]
 pub fn validate_folder_name(folder_name: &str) -> bool {
     if folder_name.is_empty() {
         return false;
     }
     folder_name
         .chars()
-        .all(|c| c.is_alphanumeric() || c == '_' || c == '-')
+        .any(|c| c.is_alphanumeric() || c == '_' || c == '-')
 }
