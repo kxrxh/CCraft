@@ -16,9 +16,9 @@ To get started with C-Craft, follow these simple steps:
 
 1. Clone the repository: `git clone https://github.com/KXRXH/CCraft.git`
 2. Install C-Craft: `cd CCraft && make build && make install`
-3. Create a new project: `c-craft init my-project`
-4. Build your project: `c-craft build`
-5. Run your project: `c-craft run`
+3. Create a new project: `ccraft new my-project`
+4. Build your project: `ccraft build`
+5. Run your project: `ccraft run`
 
 🤝 Contributing:
 
