@@ -77,7 +77,7 @@ fn fill_project_defaults(project_name: &str) -> bool {
         return false;
     }
 
-    let config = config::file::Config::default(project_name);
+    let config = config::types::Config::default(project_name);
     if let Err(_) = utils::file::create_file(project_name, "config.toml", &config.serialize()) {
         eprintln!("Unable to create config.toml!");
         return false;

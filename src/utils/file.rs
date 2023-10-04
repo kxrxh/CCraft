@@ -14,3 +14,8 @@ pub(crate) fn remove_file(folder_path: &str, file_name: &str) -> Result<(), Erro
     fs::remove_file(path)?;
     Ok(())
 }
+
+pub(crate) fn is_file_exist(folder_path: &str, file_name: &str) -> bool {
+    let path = Path::new(folder_path).join(file_name);
+    path.exists()
+}

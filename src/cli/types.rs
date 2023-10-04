@@ -1,6 +1,9 @@
 use clap::{Parser, Subcommand};
 
-use super::commands::new::{new_project, new_project_without_arg};
+use super::commands::{
+    build_c::build_project,
+    new_c::{new_project, new_project_without_arg},
+};
 
 #[derive(Parser, Debug)]
 #[command(author, version, about)]
@@ -41,7 +44,7 @@ impl Args {
     pub fn execute(&self) {
         match &self.command {
             Command::Run => todo!(),
-            Command::Build => todo!(),
+            Command::Build => build_project(),
             Command::Init => todo!(),
             Command::New(args) => {
                 if let Some(project_name) = &args.project_name {
