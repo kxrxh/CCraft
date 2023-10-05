@@ -2,39 +2,54 @@ use crate::utils::file::is_file_exist;
 
 use super::types::Config;
 
-pub(crate) fn load_config() -> Option<Config> {
+pub(crate) fn load_config() -> Config {
     if !is_file_exist(".", "config.toml") {
         eprintln!("Config file not found.");
-        return None;
+        std::process::exit(1);
     }
-    let file = std::fs::read_to_string("config.toml");
-    if file.is_err() {
+    let file = std::fs::read_to_string("config.toml").unwrap_or_else(|_| {
         eprintln!("Unable to read config file!");
-        return None;
-    }
-    Some(Config::deserialize(&file.unwrap()))
+        std::process::exit(1);
+    });
+    Config::deserialize(&file)
 }
 
-pub(crate) fn fill_with_default(config: &mut Config) {}
-
+/// Validates the given configuration.
+/// Exits the process with an error code if any validation fails.
 pub(crate) fn validate(config: &Config) {
-    if config.get_project().get_name().is_empty() {
-        eprintln!("Project name is empty!");
-        std::process::exit(1);
+    // Check if the project name is empty
+    match config.get_project().get_name().is_empty() {
+        true => {
+            eprintln!("Project name is empty!");
+            std::process::exit(1);
+        }
+        _ => (),
     }
 
-    if config.get_build().get_compiler().is_empty() {
-        eprintln!("Compiler is empty!");
-        std::process::exit(1);
+    // Check if the compiler is empty
+    match config.get_build().get_compiler().is_empty() {
+        true => {
+            eprintln!("Compiler is empty!");
+            std::process::exit(1);
+        }
+        _ => (),
     }
 
-    if config.get_build().get_source_dir().is_empty() {
-        eprintln!("Source directory is empty!");
-        std::process::exit(1);
+    // Check if the source directory is empty
+    match config.get_build().get_source_dir().is_empty() {
+        true => {
+            eprintln!("Source directory is empty!");
+            std::process::exit(1);
+        }
+        _ => (),
     }
 
-    if config.get_build().get_output_dir().is_empty() {
-        eprintln!("Output directory is empty!");
-        std::process::exit(1);
+    // Check if the output directory is empty
+    match config.get_build().get_output_dir().is_empty() {
+        true => {
+            eprintln!("Output directory is empty!");
+            std::process::exit(1);
+        }
+        _ => (),
     }
 }

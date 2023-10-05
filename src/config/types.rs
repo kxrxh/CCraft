@@ -30,12 +30,6 @@ pub struct BuildConfig {
     output_dir: String,
 }
 
-#[derive(Debug, Deserialize, Serialize, Clone)]
-pub struct TargetConfig {
-    name: String,
-    r#type: String,
-}
-
 impl Config {
     pub fn default(name: &str) -> Self {
         Config {
@@ -127,24 +121,5 @@ impl BuildConfig {
     /// Returns a reference to the get output dir of this [`BuildConfig`].
     pub fn get_output_dir(&self) -> &str {
         &self.output_dir
-    }
-}
-
-impl TargetConfig {
-    pub fn default(name: &str) -> Self {
-        TargetConfig {
-            name: name.to_string(),
-            r#type: "application".to_string(),
-        }
-    }
-
-    /// Returns a reference to the get name of this [`TargetConfig`].
-    pub fn get_name(&self) -> &str {
-        &self.name
-    }
-
-    /// Returns a reference to the get type of this [`TargetConfig`].
-    pub fn get_type(&self) -> &str {
-        &self.r#type
     }
 }

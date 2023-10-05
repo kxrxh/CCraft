@@ -1,41 +1,52 @@
-use std::io::{stdin, stdout, Write};
+use std::io::{BufRead, Write};
 
 use crate::{
     config,
     utils::{
         self,
+        file::create_file,
         folder::{create_folder, is_folder_exists, validate_folder_name},
     },
 };
 
 pub(crate) fn new_project_without_arg() {
-    let mut user_input = String::new();
     print!("Enter project name: ");
-    stdout().flush().unwrap();
+    std::io::stdout().flush().unwrap();
 
-    stdin()
-        .read_line(&mut user_input)
-        .expect("Unable to read project name");
-    user_input = user_input.trim().to_string();
-    new_project(&user_input);
+    let user_input = std::io::stdin()
+        .lock()
+        .lines()
+        .next()
+        .unwrap_or_else(|| {
+            eprintln!("Unable to read project name");
+            std::process::exit(1);
+        })
+        .unwrap_or_else(|_| {
+            eprintln!("Unable to read project name");
+            std::process::exit(1);
+        })
+        .trim()
+        .to_string();
+
+    new_project(user_input);
 }
 
-pub(crate) fn new_project(project_name: &str) {
+pub(crate) fn new_project(project_name: String) {
     // Validating project name
-    if !validate_folder_name(project_name) {
+    if !validate_folder_name(&project_name) {
         eprintln!("Invalid folder name!\nPlease use only alphanumeric characters, underscores, and hyphens for project name");
         return;
     }
 
     // Checking if folder exists. If it does, check if it is empty.
-    if is_folder_exists(project_name) {
+    if is_folder_exists(&project_name) {
         eprintln!("Folder already exists!");
         return;
     }
 
     // Creating folder
-    println!("Creating new project: {}", project_name);
-    let res = create_folder(".", project_name);
+    println!("Creating new project: {}", &project_name);
+    let res = create_folder(".", &project_name);
 
     if res.is_err() {
         eprintln!("Unable to create folder!\n{}", res.unwrap_err());
@@ -44,43 +55,46 @@ pub(crate) fn new_project(project_name: &str) {
 
     // Project folder was created
     // Now creating default project files
-    if !fill_project_defaults(project_name) {
-        return;
-    }
+    fill_project_defaults(&project_name);
+
     println!("Project successfully created!");
 }
 
-fn fill_project_defaults(project_name: &str) -> bool {
+/// Fill project defaults for a given project name.
+///
+/// # Arguments
+///
+/// * `project_name` - The name of the project.
+///
+fn fill_project_defaults(project_name: &str) {
     // Creating README.md
-    if let Err(_) = utils::file::create_file(
-        project_name,
-        "README.md",
-        format!("# {}", project_name).as_str(),
-    ) {
+    if let Err(_) = create_file(project_name, "README.MD", format!("# {}", project_name)) {
         eprintln!("Unable to create README.md!");
-        return false;
+        std::process::exit(1);
     }
 
     // Creating src folder
+    let src_path = std::path::PathBuf::from(project_name).join("src");
     if let Err(_) = utils::folder::create_folder(project_name, "src") {
         eprintln!("Unable to create src folder!");
-        return false;
+        std::process::exit(1);
     }
 
     // Creating src/main.c
-    if let Err(_) = utils::file::create_file(
-        project_name,
-        "src/main.c",
-        "#include <stdio.h>\n\nint main() {\n    printf(\"Hello, World!\\n\");\n    return 0;\n}",
+
+    if let Err(_) = create_file(
+        src_path.to_str().unwrap(),
+        "main.c",
+        "#include <stdio.h>\n\nint main() {\n    printf(\"Hello, World!\\n\");\n    return 0;\n}"
+            .to_string(),
     ) {
         eprintln!("Unable to create src/main.c!");
-        return false;
+        std::process::exit(1);
     }
 
     let config = config::types::Config::default(project_name);
-    if let Err(_) = utils::file::create_file(project_name, "config.toml", &config.serialize()) {
+    if let Err(_) = create_file(project_name, "config.toml", config.serialize()) {
         eprintln!("Unable to create config.toml!");
-        return false;
+        std::process::exit(1);
     }
-    true
 }

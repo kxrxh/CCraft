@@ -48,7 +48,7 @@ impl Args {
             Command::Init => todo!(),
             Command::New(args) => {
                 if let Some(project_name) = &args.project_name {
-                    new_project(project_name);
+                    new_project(project_name.to_string());
                 } else {
                     new_project_without_arg();
                 }
