@@ -6,7 +6,6 @@ use super::defaults::{default_compiler, default_output_dir, default_source_dir, 
 pub struct Config {
     project: ProjectInfo,
     build: BuildConfig,
-    target: TargetConfig,
 }
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
@@ -42,7 +41,6 @@ impl Config {
         Config {
             project: ProjectInfo::default(name),
             build: BuildConfig::default(),
-            target: TargetConfig::default(name),
         }
     }
 
@@ -60,10 +58,6 @@ impl Config {
 
     pub fn get_build(&self) -> &BuildConfig {
         &self.build
-    }
-
-    pub fn get_target(&self) -> &TargetConfig {
-        &self.target
     }
 }
 
@@ -110,22 +104,27 @@ impl BuildConfig {
         }
     }
 
+    /// Returns a reference to the get compiler of this [`BuildConfig`].
     pub fn get_compiler(&self) -> &str {
         &self.compiler
     }
 
+    /// Returns a reference to the get flags of this [`BuildConfig`].
     pub fn get_flags(&self) -> &Vec<String> {
         &self.flags
     }
 
+    /// Returns a reference to the get include dirs of this [`BuildConfig`].
     pub fn get_include_dirs(&self) -> &Vec<String> {
         &self.include_dirs
     }
 
+    /// Returns a reference to the get source dir of this [`BuildConfig`].
     pub fn get_source_dir(&self) -> &str {
         &self.source_dir
     }
 
+    /// Returns a reference to the get output dir of this [`BuildConfig`].
     pub fn get_output_dir(&self) -> &str {
         &self.output_dir
     }
@@ -139,10 +138,12 @@ impl TargetConfig {
         }
     }
 
+    /// Returns a reference to the get name of this [`TargetConfig`].
     pub fn get_name(&self) -> &str {
         &self.name
     }
 
+    /// Returns a reference to the get type of this [`TargetConfig`].
     pub fn get_type(&self) -> &str {
         &self.r#type
     }

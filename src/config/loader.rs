@@ -37,9 +37,4 @@ pub(crate) fn validate(config: &Config) {
         eprintln!("Output directory is empty!");
         std::process::exit(1);
     }
-
-    if config.get_target().get_name().is_empty() {
-        eprintln!("Target name is empty!");
-        std::process::exit(1);
-    }
 }
