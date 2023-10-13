@@ -91,7 +91,7 @@ impl BuildConfig {
     pub fn default() -> Self {
         BuildConfig {
             compiler: default_compiler(),
-            flags: vec![],
+            flags: vec!["-Wall".to_string()],
             include_dirs: vec![],
             source_dir: default_source_dir(),
             output_dir: default_output_dir(),

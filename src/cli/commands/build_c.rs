@@ -6,7 +6,7 @@ use crate::{
     utils::{
         cmd::check_command_exists,
         file::search_files_with_ext,
-        folder::{create_folder, is_folder_exists},
+        folder::{create_folder, is_folder_exists}, printer::{err_print, success_print, info_print},
     },
 };
 use std::process::Command;
@@ -22,14 +22,14 @@ fn run_build(config: Config) {
     let compiler = config.get_build().get_compiler();
     let is_compiler_exists = check_command_exists(compiler);
     if !is_compiler_exists {
-        eprintln!("❌ Unable to find compiler {}", compiler);
+        err_print(format!("Unable to find compiler `{}`", compiler));
         std::process::exit(2);
     }
     let mut build_command = Command::new(config.get_build().get_compiler());
     // creating the build folder
     if let Err(_) = create_folder(".", "build") {
         if !is_folder_exists("build") {
-            eprintln!("❌ Unable to create build folder");
+            err_print("Unable to create build folder");
             std::process::exit(1);
         }
     }
@@ -46,20 +46,17 @@ fn run_build(config: Config) {
         build_command.arg(flag);
     }
 
-    println!("🏗️ Building project...");
+    info_print("Building project...");
     let time = std::time::Instant::now();
     let status = build_command.status().unwrap_or_else(|_| {
-        eprintln!("❌ Failed to run build command");
+        err_print("Failed to run build command");
         std::process::exit(1);
     });
 
     if !status.success() {
-        eprintln!(
-            "❌ Build failed with exit code {}",
-            status.code().unwrap_or(-1)
-        );
+        err_print(format!("Build failed with exit code {}", status.code().unwrap_or(-1)));
         std::process::exit(2);
     }
 
-    println!("✅ Build completed in {}ms", time.elapsed().as_millis());
+    success_print(format!("Build completed in {:?}", time.elapsed()));
 }

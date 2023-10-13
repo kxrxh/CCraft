@@ -2,6 +2,7 @@ use clap::{Parser, Subcommand};
 
 use super::commands::{
     build_c::build_project,
+    init_c::init,
     new_c::{new_project, new_project_without_arg},
 };
 
@@ -45,7 +46,9 @@ impl Args {
         match &self.command {
             Command::Run => todo!(),
             Command::Build => build_project(),
-            Command::Init => todo!(),
+            Command::Init => {
+                init();
+            }
             Command::New(args) => {
                 if let Some(project_name) = &args.project_name {
                     new_project(project_name.to_string());
