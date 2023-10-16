@@ -8,7 +8,7 @@ pub fn info_print<T>(message: T)
 where
     T: std::fmt::Display,
 {
-    println!("[{BLUE}INFO{RESET}] {}", message);
+    println!("[{BLUE}INFO{RESET}]  {}", message);
 }
 pub fn err_print<T>(message: T)
 where
@@ -21,7 +21,7 @@ pub fn warn_print<T>(message: T)
 where
     T: std::fmt::Display,
 {
-    eprintln!("[{YELLOW}WARN{RESET}] {}", message);
+    eprintln!("[{YELLOW}WARN{RESET}]  {}", message);
 }
 
 pub fn success_print<T>(message: T)

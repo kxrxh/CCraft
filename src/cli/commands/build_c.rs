@@ -6,10 +6,14 @@ use crate::{
     utils::{
         cmd::check_command_exists,
         file::search_files_with_ext,
-        folder::{create_folder, is_folder_exists}, printer::{err_print, success_print, info_print},
+        folder::{create_folder, is_folder_exists},
+        printer::{err_print, info_print, success_print, warn_print},
     },
 };
-use std::process::Command;
+use std::{
+    io::{BufRead, BufReader},
+    process::{Command, Stdio},
+};
 
 const EXTENSIONS: [&str; 1] = ["c"];
 
@@ -46,17 +50,59 @@ fn run_build(config: Config) {
         build_command.arg(flag);
     }
 
-    info_print("Building project...");
+    info_print(format!("Building project using `{compiler}`..."));
+
+    let mut child = build_command
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+        .unwrap();
+
+    if let Some(ref mut stdout) = child.stdout {
+        for line in BufReader::new(stdout).lines() {
+            let line = line.unwrap();
+            info_print(line);
+        }
+    }
+
+    if let Some(ref mut stderr) = child.stderr {
+        let mut is_err = false; // is value is false then print as warn
+        let lines: Vec<Result<String, _>> = BufReader::new(stderr).lines().collect();
+        for (index, line) in lines.iter().enumerate() {
+            let line = line.as_ref().unwrap();
+            if index == lines.len() - 1 {
+                info_print(line);
+                continue;
+            }
+            if line.contains(": error: ") {
+                err_print(line);
+                is_err = true;
+            } else {
+                if is_err {
+                    err_print(line);
+                    continue;
+                }
+                if line.contains(": warning: ") {
+                    is_err = false;
+                }
+                warn_print(line)
+            }
+        }
+    }
     let time = std::time::Instant::now();
-    let status = build_command.status().unwrap_or_else(|_| {
+    let status = child.wait().unwrap_or_else(|_| {
         err_print("Failed to run build command");
         std::process::exit(1);
     });
 
-    if !status.success() {
-        err_print(format!("Build failed with exit code {}", status.code().unwrap_or(-1)));
-        std::process::exit(2);
+    if status.success() {
+        success_print(format!("Build completed in {:?}", time.elapsed()));
+        return;
     }
-
-    success_print(format!("Build completed in {:?}", time.elapsed()));
+    
+    err_print(format!(
+        "Build failed with exit code {}",
+        status.code().unwrap_or(-1)
+    ));
+    std::process::exit(2);
 }
