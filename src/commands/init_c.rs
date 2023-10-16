@@ -1,9 +1,10 @@
-use crate::{cli::commands::new_c::fill_project_defaults, utils::printer::{success_print, err_print, info_print}};
+use crate::commands::new_c::fill_project_defaults;
+use utils::printer::{err_print, info_print, success_print};
 
 /// Initializes the project.
 pub fn init() {
-    // Get the current folder path.
-    let current_folder_path = std::env::current_dir()
+    // Get the current directory path.
+    let current_directory_path = std::env::current_dir()
         .unwrap_or_else(|_| {
             err_print("Unable to get current directory");
             std::process::exit(1);
@@ -13,14 +14,14 @@ pub fn init() {
         .to_string();
 
     // Extract the directory name from the path.
-    let dir_name = String::from(current_folder_path)
+    let dir_name = String::from(current_directory_path)
         .split("/")
         .last()
         .unwrap()
         .to_string();
 
     // Print the project initialization message.
-    info_print(format!("🏗️ Initializing project `{}`", &dir_name));
+    info_print(format!("Initializing project `{}`", &dir_name));
 
     // Start measuring the time it takes to initialize the project.
     let time = std::time::Instant::now();

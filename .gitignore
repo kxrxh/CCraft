@@ -2,3 +2,4 @@
 .vscode
 /testpy
 !testpy/tests.py
+testc

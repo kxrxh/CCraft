@@ -1,13 +1,14 @@
-use crate::utils::{file::is_file_exist, printer::err_print};
+use utils::{file::is_file_exist, printer::err_print};
 
-use super::types::Config;
+use crate::types::Config;
 
-pub(crate) fn load_config() -> Config {
-    if !is_file_exist(".", "config.toml") {
+
+pub fn load_config() -> Config {
+    if !is_file_exist(".", "craft.toml") {
         err_print("Config file not found.");
         std::process::exit(1);
     }
-    let file = std::fs::read_to_string("config.toml").unwrap_or_else(|_| {
+    let file = std::fs::read_to_string("craft.toml").unwrap_or_else(|_| {
         err_print("Unable to read config file!");
         std::process::exit(1);
     });
@@ -16,7 +17,7 @@ pub(crate) fn load_config() -> Config {
 
 /// Validates the given configuration.
 /// Exits the process with an error code if any validation fails.
-pub(crate) fn validate(config: &Config) {
+pub fn validate(config: &Config) {
     // Check if the project name is empty
     match config.get_project().get_name().is_empty() {
         true => {

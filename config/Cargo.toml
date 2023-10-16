@@ -1,0 +1,11 @@
+[package]
+name = "config"
+version = "0.1.0"
+edition = "2021"
+
+
+[dependencies]
+toml = "0.8.2"
+utils = { path = "../utils" }
+serde = { version = "1.0.188", features = ["derive"] }
+

@@ -1,11 +1,10 @@
 use clap::Parser;
 
-mod cli;
-mod utils;
-mod config;
+mod args;
+mod commands;
 
 fn main() {
-    let args = cli::types::Args::parse();
+    let args = args::Args::parse();
     // Execute action based on command
     args.execute();
 }

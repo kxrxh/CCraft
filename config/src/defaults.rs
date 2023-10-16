@@ -13,3 +13,7 @@ pub(crate) fn default_output_dir() -> String {
 pub(crate) fn default_source_dir() -> String {
     "src".to_string()
 }
+
+pub(crate) fn default_project_type() -> String {
+    "bin".to_string()
+}

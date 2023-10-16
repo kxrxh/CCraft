@@ -24,7 +24,7 @@ build:
 	@cargo build --release
 	@echo "✅ Build completed!"
 
-# Install the executable to the user executable folder
+# Install the executable to the user executable directory
 install: build
 	@echo "⚙️ Installing the executable..."
 	@install -m 755 $(TARGET_DIR)/$(EXECUTABLE) $(INSTALL_DIR)

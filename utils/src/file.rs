@@ -1,36 +1,36 @@
 use std::path::Path;
 
-/// Creates a file in the specified folder with the given name and content.
+/// Creates a file in the specified directory with the given name and content.
 ///
 /// # Arguments
 ///
-/// * `folder_path` - The path to the folder where the file will be created.
+/// * `directory_path` - The path to the directory where the file will be created.
 /// * `file_name` - The name of the file to create.
 /// * `content` - The content to write to the file.
 ///
 /// # Returns
 ///
 /// Returns `Ok(())` if the file was successfully created and written to, or an `std::io::Error` if there was an error.
-pub(crate) fn create_file(
-    folder_path: &str,
+pub fn create_file(
+    directory_path: &str,
     file_name: &str,
     content: String,
 ) -> Result<(), std::io::Error> {
-    let path = std::path::Path::new(folder_path).join(file_name);
+    let path = std::path::Path::new(directory_path).join(file_name);
     std::fs::write(path, content)
 }
-/// Checks if a file exists in a given folder.
+/// Checks if a file exists in a given directory.
 ///
 /// # Arguments
 ///
-/// * `folder_path` - The path of the folder.
+/// * `directory_path` - The path of the directory.
 /// * `file_name` - The name of the file.
 ///
 /// # Returns
 ///
 /// Returns `true` if the file exists, `false` otherwise.
-pub(crate) fn is_file_exist(folder_path: &str, file_name: &str) -> bool {
-    let path = Path::new(folder_path).join(file_name);
+pub fn is_file_exist(directory_path: &str, file_name: &str) -> bool {
+    let path = Path::new(directory_path).join(file_name);
     path.exists()
 }
 
@@ -44,7 +44,7 @@ pub(crate) fn is_file_exist(folder_path: &str, file_name: &str) -> bool {
 /// # Returns
 ///
 /// A vector of strings containing the paths of the found files.
-pub(crate) fn search_files_with_ext(extensions: &[&str], path: &str) -> Vec<String> {
+pub fn search_files_with_ext(extensions: &[&str], path: &str) -> Vec<String> {
     let mut files = vec![];
     for entry in std::fs::read_dir(path).expect("Failed to read directory") {
         if let Ok(entry) = entry {
