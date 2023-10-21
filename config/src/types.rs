@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+use crate::defaults::default_linker;
+
 use super::defaults::{
     default_compiler, default_output_dir, default_project_type, default_source_dir, default_version,
 };
@@ -42,6 +44,10 @@ pub struct BuildConfig {
     /// The compiler to use for building.
     #[serde(default = "default_compiler")]
     compiler: String,
+
+    /// The linker to use for linking.
+    #[serde(default = "default_linker")]
+    linker: String,
 
     /// Flags to be passed to the build process.
     build_flags: Vec<String>,
@@ -201,6 +207,7 @@ impl BuildConfig {
         BuildConfig {
             project_type: default_project_type(),
             compiler: default_compiler(),
+            linker: default_compiler(),
             build_flags: vec!["-Wall".to_string()],
             compile_flags: vec!["-Wall".to_string()],
             include_dirs: vec![],
@@ -270,5 +277,14 @@ impl BuildConfig {
     /// A reference to the output directory.
     pub fn get_output_dir(&self) -> &str {
         &self.output_dir
+    }
+
+    /// Returns a reference to the linker used by this `BuildConfig`.
+    ///
+    /// # Returns
+    ///
+    /// A reference to the linker.
+    pub fn get_linker(&self) -> &str {
+        &self.linker
     }
 }

@@ -17,3 +17,7 @@ pub(crate) fn default_source_dir() -> String {
 pub(crate) fn default_project_type() -> String {
     "bin".to_string()
 }
+
+pub(crate) fn default_linker() -> String {
+    return default_compiler();
+}

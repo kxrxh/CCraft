@@ -1,7 +1,4 @@
-use std::{
-    io::{BufRead, BufReader},
-    process::{Command, Stdio},
-};
+use std::process::Command;
 
 use config::{
     loader::{load_config, validate},
@@ -10,8 +7,8 @@ use config::{
 use utils::{
     directory::{create_directory, is_directory_exists},
     file::search_files_with_ext,
-    other::check_command_exists,
-    printer::{err_print, info_print, success_print, warn_print},
+    other::{check_command_exists, execute_command},
+    printer::{err_print, info_print, success_print},
 };
 
 pub(crate) fn compile_project() {
@@ -46,7 +43,7 @@ pub(crate) fn start_compiling(config: &Config) {
     info_print(format!("Compiling project using `{compiler}`..."));
 
     // Search for C files
-    // ? Single thread way. May be improved in the future.
+    // ? Still works in single thread way. May be improved in the future.
 
     let files = search_files_with_ext(&["c"], "src");
     for (index, file) in files.iter().enumerate() {
@@ -62,67 +59,24 @@ pub(crate) fn start_compiling(config: &Config) {
     success_print(format!("Compiling completed in {:?}", time.elapsed()));
 }
 
-enum LineType {
-    Error,
-    Warning,
-    Other,
-}
-
 fn compile_file(compiler: &str, file: &str, flags: &Vec<String>) {
+    let filename = file.split("/").last().unwrap();
     // Retrieve file name from path and replace .c with .o
-    let output_file_name = file.split("/").last().unwrap().replace(".c", ".o");
+    let output_file_name = filename.replace(".c", ".o");
 
     let output_path = std::path::PathBuf::from("build/obj").join(output_file_name);
 
     let mut binding = Command::new(compiler);
-    let command = binding
+    let mut command = binding
         .arg("-c")
         .arg(file)
         .arg("-o")
         .arg(output_path)
         .args(flags);
 
-    // * Debug print
-    // * println!("Compile command: {:?}", &command);
-
-    let mut child = command
-        .stdout(Stdio::piped())
-        .stderr(Stdio::piped())
-        .spawn()
-        .unwrap();
-
-    // Printing stderr
-    if let Some(ref mut stderr) = child.stderr {
-        let mut current_type = LineType::Other;
-
-        for line in BufReader::new(stderr).lines() {
-            let line = line.unwrap();
-
-            // Check if the line contains an error
-            if line.contains(": error: ") {
-                current_type = LineType::Error;
-            } else if line.contains(": warning: ") {
-                current_type = LineType::Warning;
-            }
-
-            match current_type {
-                LineType::Error => err_print(line),
-                LineType::Warning => warn_print(line),
-                LineType::Other => info_print(line),
-            }
-        }
-    }
-
-    // Printing stdout
-    if let Some(ref mut stdout) = child.stdout {
-        for line in BufReader::new(stdout).lines() {
-            let line = line.unwrap();
-            info_print(line);
-        }
-    }
-
-    if child.wait().is_err() {
-        err_print("Failed to run compile command");
+    let result = execute_command(&mut command);
+    if result.is_err() {
+        err_print("Unable to compile file: ".to_string() + filename);
         std::process::exit(1);
-    };
+    }
 }
