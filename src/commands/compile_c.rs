@@ -1,5 +1,3 @@
-use std::process::Command;
-
 use config::{
     loader::{load_config, validate},
     types::Config,
@@ -7,9 +5,11 @@ use config::{
 use utils::{
     directory::{create_directory, is_directory_exists},
     file::search_files_with_ext,
-    other::{check_command_exists, execute_command},
+    other::check_command_exists,
     printer::{err_print, info_print, success_print},
 };
+
+use crate::build_system::building::compile_file;
 
 pub(crate) fn compile_project() {
     let config = load_config();
@@ -17,6 +17,11 @@ pub(crate) fn compile_project() {
     start_compiling(&config);
 }
 
+/// Start compiling the project using the provided configuration.
+///
+/// # Arguments
+///
+/// * `config` - A reference to the `Config` object containing the build configuration.
 pub(crate) fn start_compiling(config: &Config) {
     let compiler = config.get_build().get_compiler();
     let is_compiler_exists = check_command_exists(compiler);
@@ -57,26 +62,4 @@ pub(crate) fn start_compiling(config: &Config) {
     }
 
     success_print(format!("Compiling completed in {:?}", time.elapsed()));
-}
-
-fn compile_file(compiler: &str, file: &str, flags: &Vec<String>) {
-    let filename = file.split("/").last().unwrap();
-    // Retrieve file name from path and replace .c with .o
-    let output_file_name = filename.replace(".c", ".o");
-
-    let output_path = std::path::PathBuf::from("build/obj").join(output_file_name);
-
-    let mut binding = Command::new(compiler);
-    let mut command = binding
-        .arg("-c")
-        .arg(file)
-        .arg("-o")
-        .arg(output_path)
-        .args(flags);
-
-    let result = execute_command(&mut command);
-    if result.is_err() {
-        err_print("Unable to compile file: ".to_string() + filename);
-        std::process::exit(1);
-    }
 }

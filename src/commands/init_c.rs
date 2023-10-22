@@ -1,7 +1,6 @@
 use crate::commands::new_c::fill_project_defaults;
 use utils::printer::{err_print, info_print, success_print};
 
-/// Initializes the project.
 pub fn init() {
     // Get the current directory path.
     let current_directory_path = std::env::current_dir()

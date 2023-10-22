@@ -20,6 +20,10 @@ pub(crate) fn build_project() {
 }
 
 /// Starts the linking process.
+///
+/// # Arguments
+///
+/// * `config` - The configuration object.
 pub(crate) fn start_linking(config: &Config) {
     // Search for object files with the extension "o" in the "build/obj" directory
     let files: Vec<String> = search_files_with_ext(&["o"], "build/obj");

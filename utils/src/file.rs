@@ -1,4 +1,4 @@
-use std::path::Path;
+use std::{path::Path, time};
 
 /// Creates a file in the specified directory with the given name and content.
 ///
@@ -59,4 +59,19 @@ pub fn search_files_with_ext(extensions: &[&str], path: &str) -> Vec<String> {
         }
     }
     files
+}
+
+/// Get the modification time of a file.
+///
+/// # Arguments
+///
+/// * `file` - The path of the file.
+///
+/// # Returns
+///
+/// Returns the modification time of the file, or `None` if the file does not exist or if the
+/// modification time could not be retrieved.
+pub fn get_modification_time(file: &str) -> Option<time::SystemTime> {
+    let path = std::path::Path::new(file);
+    path.metadata().ok().and_then(|m| m.modified().ok())
 }

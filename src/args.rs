@@ -7,6 +7,7 @@ use crate::commands::{
     compile_c::compile_project,
     init_c::init,
     new_c::{get_project_name_from_user, new_project_bin},
+    run_c::run_project,
 };
 
 #[derive(Parser, Debug)]
@@ -59,7 +60,7 @@ pub(crate) struct NewCommandArgs {
 impl Args {
     pub fn execute(&self) {
         match &self.command {
-            Command::Run => todo!(),
+            Command::Run => run_project(),
             Command::Compile => compile_project(),
             Command::Build => build_project(),
             Command::Init => {
