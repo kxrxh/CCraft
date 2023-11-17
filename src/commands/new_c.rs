@@ -108,7 +108,7 @@ pub fn fill_project_defaults(project_directory: &str, project_name: &str) {
     if let Err(err) = create_file(
         src_path.to_str().unwrap(),
         "main.c",
-        "#include <stdio.h>\n\nint main() {\n    printf(\"Hello, World!\\n\");\n    return 0;\n}"
+        "#include <stdio.h>\n\nint main() {\n    printf(\"Hello, CCraft!\\n\");\n    return 0;\n}"
             .to_string(),
     ) {
         err_print("Unable to create main.c!");

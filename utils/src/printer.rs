@@ -19,7 +19,7 @@ pub fn info_print<T>(message: T)
 where
     T: std::fmt::Display,
 {
-    println!("[{BLUE}INFO{RESET}]  {}", message);
+    println!("[{BLUE}INFO{RESET}]    {}", message);
 }
 
 /// Prints an error message to the standard error stream.
@@ -37,7 +37,7 @@ pub fn err_print<T>(message: T)
 where
     T: std::fmt::Display,
 {
-    eprintln!("[{RED}ERROR{RESET}] {}", message);
+    eprintln!("[{RED}ERROR{RESET}]   {}", message);
 }
 
 /// Prints a warning message to the standard error output.

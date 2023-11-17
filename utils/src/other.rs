@@ -1,12 +1,9 @@
 use std::{
-    collections::HashMap,
-    fs,
     io::{BufRead, BufReader},
     process::{Command, Stdio},
 };
 
 use git2::Repository;
-use regex::Regex;
 
 use crate::printer::{err_print, info_print, warn_print};
 
@@ -98,9 +95,11 @@ pub fn execute_command(command: &mut Command) -> Result<(), ()> {
         }
     }
 
-    if child.wait().is_err() {
-        return Err(());
-    };
+    if let Ok(status) = child.wait() {
+        if !status.success() {
+            return Err(());
+        }
+    }
 
     Ok(())
 }
