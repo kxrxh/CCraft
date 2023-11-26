@@ -71,7 +71,7 @@ pub(crate) fn new_project_bin(project_name: &str) {
         std::process::exit(1);
     }
 
-    success_print(format!(
+    success_print(&format!(
         "Project successfully created in {:?}",
         time.elapsed()
     ));
@@ -88,7 +88,7 @@ pub fn fill_project_defaults(project_directory: &str, project_name: &str) {
     if let Err(err) = create_file(
         project_directory,
         "README.MD",
-        format!("# {}", project_name),
+        &format!("# {}", project_name),
     ) {
         err_print("Unable to create README.MD!");
         err_print(err);
@@ -108,8 +108,7 @@ pub fn fill_project_defaults(project_directory: &str, project_name: &str) {
     if let Err(err) = create_file(
         src_path.to_str().unwrap(),
         "main.c",
-        "#include <stdio.h>\n\nint main() {\n    printf(\"Hello, CCraft!\\n\");\n    return 0;\n}"
-            .to_string(),
+        "#include <stdio.h>\n\nint main() {\n    printf(\"Hello, CCraft!\\n\");\n    return 0;\n}",
     ) {
         err_print("Unable to create main.c!");
         err_print(err);
@@ -117,7 +116,7 @@ pub fn fill_project_defaults(project_directory: &str, project_name: &str) {
     }
 
     let config = config::types::Config::default(project_name);
-    if let Err(err) = create_file(project_directory, "craft.toml", config.serialize()) {
+    if let Err(err) = create_file(project_directory, "craft.toml", &config.serialize()) {
         err_print("Unable to create craft.toml!");
         err_print(err);
         std::process::exit(1);

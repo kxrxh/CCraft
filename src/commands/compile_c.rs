@@ -14,7 +14,6 @@ use utils::{
 use crate::build_system::{
     building::compile_file,
     cache::{BuildCache, BuildTimeFileCache},
-    dependencies::create_dependency_tree,
 };
 
 pub(crate) fn compile_project() {
@@ -32,7 +31,7 @@ pub(crate) fn start_compiling(config: &Config) {
     let compiler = config.get_build().get_compiler();
 
     if !check_command_exists(compiler) {
-        err_print(format!("Unable to find compiler `{}`", compiler));
+        err_print(&format!("Unable to find compiler `{}`", compiler));
         std::process::exit(2);
     }
 
@@ -58,7 +57,7 @@ pub(crate) fn start_compiling(config: &Config) {
     
     // setting up compilation start time
     let time = std::time::Instant::now();
-    info_print(format!("Compiling project using `{compiler}`..."));
+    info_print(&format!("Compiling project using `{compiler}`..."));
 
     // Search for C files
     // ? Still works in single thread way. May be improved in the future.
@@ -69,26 +68,27 @@ pub(crate) fn start_compiling(config: &Config) {
 
         if let Some(cache_entry) = build_cache.files_cache.iter_mut().find(|entry| entry.path_eq(&cache_key)) {
             if cache_entry.get_time() >= get_modification_time(file).unwrap() {
-                info_print(format!("[{}/{}] Skipping file: {} (no changes)", index + 1, files.len(), file));
+                info_print(&format!("[{}/{}] Skipping file: {} (no changes)", index + 1, files.len(), file));
                 continue;
             }
-            info_print(format!("[{}/{}] Compiling file: {}", index + 1, files.len(), file));
+            
+            info_print(&format!("[{}/{}] Compiling file: {}", index + 1, files.len(), file));
             compile_file(compiler, &file, config.get_build().get_compile_flags());
             cache_entry.update_time(get_modification_time(file).unwrap());
         } else {
-            info_print(format!("[{}/{}] Compiling file: {}", index + 1, files.len(), file));
+            info_print(&format!("[{}/{}] Compiling file: {}", index + 1, files.len(), file));
             compile_file(compiler, &file, config.get_build().get_compile_flags());
             build_cache.files_cache.push(BuildTimeFileCache::new(file, vec![]));
         }
 
-        info_print(format!("[{}/{}] Compiling file: {}", index + 1, files.len(), file));
+        info_print(&format!("[{}/{}] Compiling file: {}", index + 1, files.len(), file));
         compile_file(compiler, &file, config.get_build().get_compile_flags());
     }
 
 
     save_build_cache(&build_cache);
 
-    success_print(format!("Compiling completed in {:?}", time.elapsed()));
+    success_print(&format!("Compiling completed in {:?}", time.elapsed()));
 }
 
 fn load_build_cache() -> BuildCache {
@@ -108,18 +108,5 @@ fn save_build_cache(cache: &BuildCache) {
         if let Err(err) = fs::write("build/cache.json", json) {
             eprintln!("Error saving build cache: {}", err);
         }
-    }
-}
-
-// Function to update an entry in build cache
-fn update_build_cache(cache: &mut BuildCache, key: String, new_entry: BuildTimeFileCache) {
-    if let Some(entry) = cache
-        .files_cache
-        .iter_mut()
-        .find(|entry| entry.path_eq(&key))
-    {
-        *entry = new_entry;
-    } else {
-        cache.files_cache.push(new_entry);
     }
 }

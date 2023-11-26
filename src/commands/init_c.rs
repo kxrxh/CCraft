@@ -20,7 +20,7 @@ pub fn init() {
         .to_string();
 
     // Print the project initialization message.
-    info_print(format!("Initializing project `{}`", &dir_name));
+    info_print(&format!("Initializing project `{}`", &dir_name));
 
     // Start measuring the time it takes to initialize the project.
     let time = std::time::Instant::now();

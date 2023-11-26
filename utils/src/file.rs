@@ -14,7 +14,7 @@ use std::{path::Path, time};
 pub fn create_file(
     directory_path: &str,
     file_name: &str,
-    content: String,
+    content: &str,
 ) -> Result<(), std::io::Error> {
     let path = std::path::Path::new(directory_path).join(file_name);
     std::fs::write(path, content)
