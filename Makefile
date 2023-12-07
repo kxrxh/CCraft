@@ -12,9 +12,6 @@ TEST_DIR = testpy
 # Set the name of the executable
 EXECUTABLE = $(PROJECT_NAME)
 
-# Set the path to the Rust compiler (change this if necessary)
-RUSTC = rustc
-
 # Default target
 all: build
 
@@ -30,12 +27,6 @@ install: build
 	@install -m 755 $(TARGET_DIR)/$(EXECUTABLE) $(INSTALL_DIR)
 	@echo "✅ Installation completed!"
 	@clean
-
-# Run the tests
-test: clean-tests build 
-	@echo "🧪 Running tests..."
-	@install -m 777 $(TARGET_DIR)/$(EXECUTABLE) $(TEST_DIR)
-	cd $(TEST_DIR) && python tests.py
 
 # Clean the project
 clean:

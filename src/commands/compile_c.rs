@@ -54,7 +54,6 @@ pub(crate) fn start_compiling(config: &Config) {
         }
     });
 
-    
     // setting up compilation start time
     let time = std::time::Instant::now();
     info_print(&format!("Compiling project using `{compiler}`..."));
@@ -66,25 +65,51 @@ pub(crate) fn start_compiling(config: &Config) {
     for (index, file) in files.iter().enumerate() {
         let cache_key = file.clone();
 
-        if let Some(cache_entry) = build_cache.files_cache.iter_mut().find(|entry| entry.path_eq(&cache_key)) {
+        if let Some(cache_entry) = build_cache
+            .files_cache
+            .iter_mut()
+            .find(|entry| entry.path_eq(&cache_key))
+        {
             if cache_entry.get_time() >= get_modification_time(file).unwrap() {
-                info_print(&format!("[{}/{}] Skipping file: {} (no changes)", index + 1, files.len(), file));
+                info_print(&format!(
+                    "[{}/{}] Skipping file: {} (no changes)",
+                    index + 1,
+                    files.len(),
+                    file
+                ));
                 continue;
             }
-            
-            info_print(&format!("[{}/{}] Compiling file: {}", index + 1, files.len(), file));
+
+            info_print(&format!(
+                "[{}/{}] Compiling file: {}",
+                index + 1,
+                files.len(),
+                file
+            ));
             compile_file(compiler, &file, config.get_build().get_compile_flags());
             cache_entry.update_time(get_modification_time(file).unwrap());
+            continue;
         } else {
-            info_print(&format!("[{}/{}] Compiling file: {}", index + 1, files.len(), file));
+            info_print(&format!(
+                "[{}/{}] Compiling file: {}",
+                index + 1,
+                files.len(),
+                file
+            ));
             compile_file(compiler, &file, config.get_build().get_compile_flags());
-            build_cache.files_cache.push(BuildTimeFileCache::new(file, vec![]));
+            build_cache
+                .files_cache
+                .push(BuildTimeFileCache::new(file, vec![]));
         }
 
-        info_print(&format!("[{}/{}] Compiling file: {}", index + 1, files.len(), file));
+        info_print(&format!(
+            "[{}/{}] Compiling file: {}",
+            index + 1,
+            files.len(),
+            file
+        ));
         compile_file(compiler, &file, config.get_build().get_compile_flags());
     }
-
 
     save_build_cache(&build_cache);
 

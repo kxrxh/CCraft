@@ -1,3 +1,1 @@
-pub fn run_project() {
-
-}
+pub fn run_project() {}
