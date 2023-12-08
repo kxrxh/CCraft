@@ -18,6 +18,10 @@ pub(crate) fn default_project_type() -> String {
     "bin".to_string()
 }
 
+pub(crate) fn default_include_dir() -> Vec<String> {
+    vec!["include".to_string()]
+}
+
 pub(crate) fn default_linker() -> String {
     return default_compiler();
 }

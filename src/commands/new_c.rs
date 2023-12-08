@@ -103,8 +103,14 @@ pub fn fill_project_defaults(project_directory: &str, project_name: &str) {
         std::process::exit(1);
     }
 
-    // Creating src/main.c
+    // Creating include directory
+    if let Err(err) = utils::directory::create_directory(project_directory, "include") {
+        err_print("Unable to create include directory!");
+        err_print(err);
+        std::process::exit(1);
+    }
 
+    // Creating src/main.c
     if let Err(err) = create_file(
         src_path.to_str().unwrap(),
         "main.c",

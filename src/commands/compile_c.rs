@@ -88,6 +88,7 @@ pub(crate) fn start_compiling(config: &Config) {
             ));
             compile_file(compiler, &file, config.get_build().get_compile_flags());
             cache_entry.update_time(get_modification_time(file).unwrap());
+            save_build_cache(&build_cache);
             continue;
         } else {
             info_print(&format!(
@@ -100,22 +101,14 @@ pub(crate) fn start_compiling(config: &Config) {
             build_cache
                 .files_cache
                 .push(BuildTimeFileCache::new(file, vec![]));
+            save_build_cache(&build_cache);
         }
-
-        info_print(&format!(
-            "[{}/{}] Compiling file: {}",
-            index + 1,
-            files.len(),
-            file
-        ));
-        compile_file(compiler, &file, config.get_build().get_compile_flags());
     }
-
-    save_build_cache(&build_cache);
 
     success_print(&format!("Compiling completed in {:?}", time.elapsed()));
 }
 
+// Function to load build cache
 fn load_build_cache() -> BuildCache {
     if let Ok(contents) = fs::read_to_string("build/cache.json") {
         if let Ok(cache) = BuildCache::new_from_json(&contents) {

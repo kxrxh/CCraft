@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::defaults::default_linker;
+use crate::defaults::{default_include_dir, default_linker};
 
 use super::defaults::{
     default_compiler, default_output_dir, default_project_type, default_source_dir, default_version,
@@ -56,6 +56,7 @@ pub struct BuildConfig {
     compile_flags: Vec<String>,
 
     /// Directories to include in the build process.
+    #[serde(default = "default_include_dir")]
     include_dirs: Vec<String>,
 
     /// The source directory for the project.
@@ -210,7 +211,7 @@ impl BuildConfig {
             linker: default_compiler(),
             build_flags: vec!["-Wall".to_string()],
             compile_flags: vec!["-Wall".to_string()],
-            include_dirs: vec![],
+            include_dirs: vec!["include".to_string()],
             source_dir: default_source_dir(),
             output_dir: default_output_dir(),
         }
